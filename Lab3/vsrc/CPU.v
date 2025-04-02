@@ -33,16 +33,16 @@ module CPU (
     // -----------------------------------------
     // 1. Program Counter (PC) Logic
     // -----------------------------------------
-    wire [31:0] pc_current;
-    wire [31:0] pc_next;
+    reg [31:0] pc_current;
+    initial begin
+        pc_current = 32'h00400000;
+    end
 
-    assign pc_next = pc_current+4;
     
-    PC pc(
+    PC pc_reg(
         .clk(clk),
         .rst(rst),
         .en(global_en),
-        .npc(pc_next),
         .pc(pc_current)
     );
 
@@ -116,7 +116,7 @@ module CPU (
         .alu_src0(alu_src0),
         .alu_src1(alu_src1),
         .alu_op(alu_op),
-        .alu_res(alu_result)
+        .alu_result(alu_result)
     );
 
     // -----------------------------------------
@@ -126,7 +126,7 @@ module CPU (
 
     // Commit
     reg  [ 0 : 0]   commit_reg          ;
-    reg  [31 : 0]   commit_pc_reg=32'H00400000       ;
+    reg  [31 : 0]   commit_pc_reg       ;
     reg  [31 : 0]   commit_inst_reg     ;
     reg  [ 0 : 0]   commit_halt_reg     ;
     reg  [ 0 : 0]   commit_reg_we_reg   ;
