@@ -38,6 +38,7 @@ module ALU (
             5'b01000: alu_result = ($signed(alu_src0) < $signed(alu_src1)) ? 32'd1 : 32'd0; // SLT
             5'b01001: alu_result = (alu_src0 < alu_src1) ? 32'd1 : 32'd0; // SLTU
             5'b01010: alu_result = alu_src1;                    // LUI (直接使用立即数)
+            5'b01011: alu_result = (alu_src0+alu_src1)&32'hFFFFFFFE; //JALR
             default: alu_result = 32'd0;
         endcase
     end

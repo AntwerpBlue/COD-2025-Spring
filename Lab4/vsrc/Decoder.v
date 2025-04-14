@@ -148,7 +148,7 @@ module DECODE (
                 alu_src0_sel = 1'b0;  // 使用寄存器值
                 alu_src1_sel = 1'b1;  // 使用立即数
                 rf_wd_sel = 2'b00;
-                alu_op = 5'b00000;    // ADD
+                alu_op = 5'b01011;
                 imm = {{20{inst[31]}}, inst[31:20]};  // I-type立即数
                 br_type = 4'b1000;    // 寄存器跳转
             end
