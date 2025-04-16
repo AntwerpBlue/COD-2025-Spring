@@ -4,7 +4,7 @@
 
 ![alt text](img/datapath.png)
 
-## Pipeiline
+## Pipeline
 
 To increase the frequency of instruction execution, we need shorten the delay in the circuit, and that is the main idea of pipelining. We devide the execution of an instruction into 5 stages:
   
