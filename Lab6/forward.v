@@ -12,7 +12,7 @@ module Forwarding(
     output reg       rf_rd1_fe,
     output reg [31:0] rf_rd0_fd,
     output reg [31:0] rf_rd1_fd
-)
+);
 
 always @(*) begin
     // Default values (no forwarding)

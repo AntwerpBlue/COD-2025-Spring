@@ -39,7 +39,7 @@ module CPU (
     wire [1:0] npc_sel_ex;
     wire branch_taken = (npc_sel_ex != 2'b00); //分支跳转
     
-    wire commit_id, commit_ex, commit_mem, commit_wb;
+    wire commit_id, commit_ex, commit_mem, commit_wb,stall_pc;
 
     PC pc_reg(
         .clk(clk),
@@ -250,21 +250,21 @@ module CPU (
         .rf_rd1_fe(rf_rd1_fe),
         .rf_rd0_fd(rf_rd0_fd),
         .rf_rd1_fd(rf_rd1_fd)
-    )
+    );
 
     MUX fmux0(
         .src0(rf_rd0_raw_ex),
         .src1(rf_rd0_fd),
         .sel(rf_rd0_fe),
         .res(rf_rd0_ex)
-    )
+    );
 
     MUX fmux1(
         .src0(rf_rd1_raw_ex),
         .src1(rf_rd1_fd),
         .sel(rf_rd1_fe),
         .res(rf_rd1_ex)
-    )
+    );
 
     BRANCH branch(
         .br_type(br_type_ex),
