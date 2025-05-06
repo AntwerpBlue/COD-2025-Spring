@@ -14,8 +14,9 @@ module SegCtrl(
 
     // Load-use hazard detection
     wire load_use_hazard = rf_we_ex && (rf_wd_sel_ex == 2'b10) &&  // EX stage is a load instruction
-                         ((rf_ra0_id == rf_wa_ex) ||              // ID stage uses EX's result
-                          (rf_ra1_id == rf_wa_ex));
+                        rf_wa_ex != 5'b00000 &&              // EX stage writes to a valid register 
+                        ((rf_ra0_id == rf_wa_ex) ||              // ID stage uses EX's result
+                        (rf_ra1_id == rf_wa_ex));
 
     // Control hazard detection (branch/jump)
     wire ctrl_hazard = (npc_sel_ex != 2'b00);  // EX stage is a branch/jump
