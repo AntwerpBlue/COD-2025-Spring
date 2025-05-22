@@ -12,7 +12,7 @@ module cache #(
     parameter REPLACE_POLICY    = 0     // 0: LRU, 1: FIFO, 2: RANDOM
 )(
     input                     clk,    
-    input                     rstn,
+    input                     rstn,   // 低电平复位
     /* CPU接口 */  
     input [31:0]              addr,   // CPU地址
     input                     r_req,  // CPU读请求
