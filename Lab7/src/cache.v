@@ -236,8 +236,8 @@ module cache #(
         end
     endgenerate
 
-    integer min_pri = WAY_NUM;
-    integer min_way = 0;
+    integer max_pri = 0;
+    integer max_way = 0;
 
     // 替换策略选择
     always @(*) begin
@@ -249,12 +249,12 @@ module cache #(
                 0: begin // LRU
                     // 查找优先级最低的路
                     for (i = 0; i < WAY_NUM; i = i + 1) begin
-                        if (lru_counter[w_index][i] < min_pri) begin
-                            min_pri = lru_counter[w_index][i];
-                            min_way = i;
+                        if (lru_counter[w_index][i] > max_pri) begin
+                            max_pri = lru_counter[w_index][i];
+                            max_way = i;
                         end
                     end
-                    way_select = 1 << min_way;
+                    way_select = 1 << max_way;
                 end
                 1: begin // FIFO
                     way_select = 1 << fifo_counter[w_index];
@@ -264,12 +264,12 @@ module cache #(
                 end
                 default: begin // 默认LRU
                     for (i = 0; i < WAY_NUM; i = i + 1) begin
-                        if (lru_counter[w_index][i] < min_pri) begin
-                            min_pri = lru_counter[w_index][i];
-                            min_way = i;
+                        if (lru_counter[w_index][i] > max_pri) begin
+                            max_pri = lru_counter[w_index][i];
+                            max_way = i;
                         end
                     end
-                    way_select = 1 << min_way;
+                    way_select = 1 << max_way;
                 end
             endcase
             
