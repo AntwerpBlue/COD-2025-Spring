@@ -38,7 +38,7 @@ module cache #(
         // Cache行数
         SET_NUM   = 1 << INDEX_WIDTH,
         // 替换策略计数器宽度
-        REPLACE_COUNTER_WIDTH = (REPLACE_POLICY == 0) ? $clog2(WAY_NUM*WAY_NUM) : $clog2(WAY_NUM);
+        REPLACE_COUNTER_WIDTH = $clog2(WAY_NUM);
 
     integer i;
     integer j;
@@ -51,7 +51,7 @@ module cache #(
 
     // 替换策略相关寄存器
     reg [REPLACE_COUNTER_WIDTH-1:0] fifo_counter [0:SET_NUM-1]; // FIFO计数器
-    reg [WAY_NUM*WAY_NUM-1:0] lru_counter [0:SET_NUM-1]; // LRU计数器 (矩阵方式)
+    reg [REPLACE_COUNTER_WIDTH-1:0] lru_counter [0:SET_NUM-1]; // LRU计数器 (矩阵方式)
     reg [31:0] rand_seed; // 伪随机数种子
 
     // Cache导线
@@ -149,14 +149,8 @@ module cache #(
                     for(i = 0; i < WAY_NUM; i = i + 1)begin
                         if(hit[i])begin
                             for (j = 0; j < WAY_NUM; j = j + 1) begin
-                                if (lru_counter[w_index][i*WAY_NUM+j] > 0) begin
-                                    lru_counter[w_index][i*WAY_NUM+j] <= lru_counter[w_index][i*WAY_NUM+j] - 1;
-                                end
-                                if (lru_counter[w_index][j*WAY_NUM+i] < WAY_NUM-1) begin
-                                    lru_counter[w_index][j*WAY_NUM+i] <= lru_counter[w_index][j*WAY_NUM+i] + 1;
-                                end
+                                lru_counter[w_index][j]= (j == i) ? 0 : lru_counter[w_index][j] + 1;
                             end
-                            lru_counter[w_index][i*WAY_NUM+i] <= WAY_NUM-1;
                         end
                     end
                 end
@@ -255,8 +249,8 @@ module cache #(
                 0: begin // LRU
                     // 查找优先级最低的路
                     for (i = 0; i < WAY_NUM; i = i + 1) begin
-                        if (lru_counter[w_index][i*WAY_NUM+i] < min_pri) begin
-                            min_pri = lru_counter[w_index][i*WAY_NUM+i];
+                        if (lru_counter[w_index][i] < min_pri) begin
+                            min_pri = lru_counter[w_index][i];
                             min_way = i;
                         end
                     end
@@ -270,8 +264,8 @@ module cache #(
                 end
                 default: begin // 默认LRU
                     for (i = 0; i < WAY_NUM; i = i + 1) begin
-                        if (lru_counter[w_index][i*WAY_NUM+i] < min_pri) begin
-                            min_pri = lru_counter[w_index][i*WAY_NUM+i];
+                        if (lru_counter[w_index][i] < min_pri) begin
+                            min_pri = lru_counter[w_index][i];
                             min_way = i;
                         end
                     end
